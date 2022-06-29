@@ -10,10 +10,16 @@
           :style="{ lineHeight: '64px' }"
         >
           <a-menu-item v-for="item in menuItem" :key="item.key">
-            <RouterLink v-if="item.isRouterLink" :to="item.to">{{
-              item.name
-            }}</RouterLink>
-            <p v-else>{{ item.name }}</p>
+            <RouterLink v-if="item.isRouterLink" :to="item.to">
+              {{ item.name }}
+            </RouterLink>
+
+            <h6 v-else>
+              {{ item.name }}
+            </h6>
+          </a-menu-item>
+          <a-menu-item>
+            <a-button @click="signOut">LogOut </a-button>
           </a-menu-item>
         </a-menu>
       </slot>
@@ -34,6 +40,10 @@
 </template>
 <script setup>
 import { ref } from "vue";
+import { useStoreAuth } from "@/stores/storeAuth";
+
+//store
+const storeAuth = useStoreAuth();
 
 const menuItem = [
   {
@@ -49,9 +59,13 @@ const menuItem = [
     to: "/viewStates",
   },
 ];
-const selectedKeys = ref(menuItem.map((item) => item.key));
+const selectedKeys = ref(menuItem.map((item) => item.key).filter(Boolean));
 
 // console.log(selectedKeys.value);
+function signOut() {
+  storeAuth.signOut();
+  console.log(storeAuth.signOut());
+}
 </script>
 
 <style scoped>
@@ -59,5 +73,6 @@ const selectedKeys = ref(menuItem.map((item) => item.key));
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 </style>
