@@ -27,9 +27,9 @@
         {{ props.submitBtnName }}
       </a-button>
       <a-button type="primary" class="mr-5" @click="cancle">{{
-        storeNotes.isEdit ? "Cancle" : "Clear"
+        storeNotes.isEdit ? "Cancel" : "Clear"
       }}</a-button>
-      <a-button v-if="storeNotes.isEdit" @click="router.push('/')"
+      <a-button v-if="storeNotes.isEdit" class="mt-5" @click="router.push('/')"
         >Go Back To Notes</a-button
       >
     </a-form-item>
