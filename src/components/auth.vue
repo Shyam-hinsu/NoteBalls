@@ -17,12 +17,12 @@
         <a-button
           class="mr-4"
           :type="register ? 'default' : 'primary'"
-          @click="register = false"
+          @click="tglTologin"
           >Login
         </a-button>
         <a-button
           :type="register ? 'primary' : 'default'"
-          @click="register = true"
+          @click="tglToRegister"
         >
           Register
         </a-button>
@@ -33,9 +33,11 @@
         {{ register ? "Register" : "LogIn" }}
       </h1>
     </a-row>
-    <a-row class="justify-center auth-message">
+    <a-row v-if="storeAuth.error.errorCode" class="justify-center auth-message">
       <a-col class="error-bg px-1 text-xs">
-        <h6>msg</h6>
+        <h6 class="error-msg">
+          {{ storeAuth.error.errorCode }}
+        </h6>
       </a-col>
     </a-row>
     <a-divider type="horizontal" class="bg-blue-500 my-1" />
@@ -122,6 +124,14 @@ function onFinish() {
     }
   }
 }
+function tglTologin() {
+  register.value = false;
+  credentials.value.password = "";
+}
+function tglToRegister() {
+  register.value = true;
+  credentials.value.password = "";
+}
 </script>
 
 <style scoped>
@@ -161,5 +171,8 @@ function onFinish() {
   backdrop-filter: blur(2.4px);
   -webkit-backdrop-filter: blur(2.4px);
   border: 1px solid rgba(255, 0, 0, 1);
+}
+.error-msg {
+  color: #ff0000;
 }
 </style>

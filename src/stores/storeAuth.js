@@ -14,6 +14,7 @@ export const useStoreAuth = defineStore("storeAuth", {
     return {
       logInStatus: false,
       user: {},
+      error: {},
     };
   },
   getters: {},
@@ -26,10 +27,12 @@ export const useStoreAuth = defineStore("storeAuth", {
         if (user) {
           this.user.id = user.uid;
           this.user.email = user.email;
+          this.error = {};
           this.router.push("/");
           storeNotes.init();
         } else {
           this.user = {};
+          this.error = {};
           storeNotes.clearNotes();
           this.router.replace("/auth");
         }
@@ -43,20 +46,22 @@ export const useStoreAuth = defineStore("storeAuth", {
       )
         .then((userCredential) => {
           const user = userCredential.user;
+          this.error = {};
         })
         .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
+          this.error.errorCode = error.code;
+          this.error.errorMessage = error.message;
         });
     },
     logIn(credentials) {
       signInWithEmailAndPassword(auth, credentials.email, credentials.password)
         .then((userCredential) => {
           const user = userCredential.user;
+          this.error = {};
         })
         .catch((error) => {
-          const errorCode = error.code;
-          const errorMessage = error.message;
+          this.error.errorCode = error.code;
+          this.error.errorMessage = error.message;
         });
     },
     signOut() {

@@ -33,8 +33,13 @@
       </div>
     </a-layout-content>
     <slot />
-    <a-layout-footer>
-      <slot name="footer"> this is footer </slot>
+    <a-layout-footer class="footer">
+      <slot name="footer">
+        <img src="@/../public/antvue.svg" class="itemImage" />
+        <img src="@/../public/pinia.svg" class="itemImage" />
+        <img src="@/../public/favicon.ico" class="itemImage" />
+        <img src="@/../public/tailwind.png" class="itemImage" />
+      </slot>
     </a-layout-footer>
   </a-layout>
 </template>
@@ -79,5 +84,15 @@ function signOut() {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+.footer {
+  background-color: #001529;
+  display: flex;
+  justify-content: center;
+}
+.itemImage {
+  margin-right: 10px;
+  height: 30px;
+  width: 30px;
 }
 </style>
