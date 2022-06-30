@@ -13,9 +13,11 @@ import {
   query,
   orderBy,
 } from "firebase/firestore";
+import { useStoreAuth } from "@/stores/storeAuth";
 
-const notesCollectionRef = collection(db, "notes");
-const notesCollectionQuery = query(notesCollectionRef, orderBy("date"));
+let notesCollectionRef;
+let notesCollectionQuery;
+let getNotesSnapshots = null;
 
 export const useStoreNotes = defineStore("storeNotes", {
   state: () => {
@@ -46,22 +48,43 @@ export const useStoreNotes = defineStore("storeNotes", {
     },
   },
   actions: {
+    init() {
+      //store
+      const storeAuth = useStoreAuth();
+      notesCollectionRef = collection(db, "users", storeAuth.user.id, "notes");
+      // notesCollectionRef = collection(
+      //   db,
+      //   "users",
+      //   "5tNDlnD77jga5ZCCcr4B7iHPPZB3",
+      //   "notes"
+      // );
+      notesCollectionQuery = query(notesCollectionRef, orderBy("date"));
+      this.getNotes();
+    },
     async getNotes() {
       this.isNotesLoaded = true;
-      onSnapshot(notesCollectionQuery, (querySnapshot) => {
-        let notes = [];
-        querySnapshot.forEach((doc) => {
-          let note = {
-            id: doc.id,
-            content: doc.data().content,
-            timestemp: doc.data().timestemp,
-            date: doc.data().date,
-          };
-          notes.unshift(note);
-        });
-        this.notes = notes;
-        this.isNotesLoaded = false;
-      });
+
+      getNotesSnapshots = onSnapshot(
+        notesCollectionQuery,
+        (querySnapshot) => {
+          let notes = [];
+          querySnapshot.forEach((doc) => {
+            let note = {
+              id: doc.id,
+              content: doc.data().content,
+              timestemp: doc.data().timestemp,
+              date: doc.data().date,
+            };
+            notes.unshift(note);
+          });
+          this.notes = notes;
+          this.isNotesLoaded = false;
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+      //later  on
     },
     async submit() {
       await setDoc(doc(notesCollectionRef, uuidv4()), {
@@ -84,6 +107,10 @@ export const useStoreNotes = defineStore("storeNotes", {
     },
     findContentById(id) {
       return this.notes.filter((note) => note.id === id)[0]["content"];
+    },
+    clearNotes() {
+      this.notes = [];
+      if (getNotesSnapshots) getNotesSnapshots(); //unsubscribe form any active listner
     },
   },
 });

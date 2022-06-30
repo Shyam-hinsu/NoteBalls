@@ -18,7 +18,7 @@
               {{ item.name }}
             </h6>
           </a-menu-item>
-          <a-menu-item>
+          <a-menu-item v-if="storeAuth.user.id">
             <a-button @click="signOut">LogOut </a-button>
           </a-menu-item>
         </a-menu>
@@ -41,9 +41,15 @@
 <script setup>
 import { ref } from "vue";
 import { useStoreAuth } from "@/stores/storeAuth";
+import { useRoute, useRouter } from "vue-router";
+
+import { walkBlockDeclarations } from "@vue/compiler-core";
 
 //store
 const storeAuth = useStoreAuth();
+
+// router
+const router = useRouter();
 
 const menuItem = [
   {
@@ -64,7 +70,6 @@ const selectedKeys = ref(menuItem.map((item) => item.key).filter(Boolean));
 // console.log(selectedKeys.value);
 function signOut() {
   storeAuth.signOut();
-  console.log(storeAuth.signOut());
 }
 </script>
 

@@ -5,20 +5,37 @@ import {
   createUserWithEmailAndPassword,
   signOut,
   signInWithEmailAndPassword,
+  onAuthStateChanged,
 } from "firebase/auth";
+import { useStoreNotes } from "@/stores/storeNotes";
 
 export const useStoreAuth = defineStore("storeAuth", {
   state: () => {
     return {
       logInStatus: false,
-      successLoginDetails: {},
-      errorLoginDetails: {},
+      user: {},
     };
   },
   getters: {},
   actions: {
+    init() {
+      //sore data (notes)
+      const storeNotes = useStoreNotes();
+
+      onAuthStateChanged(auth, (user) => {
+        if (user) {
+          this.user.id = user.uid;
+          this.user.email = user.email;
+          this.router.push("/");
+          storeNotes.init();
+        } else {
+          this.user = {};
+          storeNotes.clearNotes();
+          this.router.replace("/auth");
+        }
+      });
+    },
     register(credentials) {
-      let registerStatus = {};
       createUserWithEmailAndPassword(
         auth,
         credentials.email,
@@ -26,57 +43,27 @@ export const useStoreAuth = defineStore("storeAuth", {
       )
         .then((userCredential) => {
           const user = userCredential.user;
-          const successDetails = {
-            status: 1,
-            user,
-          };
-          registerStatus = successDetails;
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          const errorDetails = {
-            status: 0,
-            errorCode,
-            errorMessage,
-          };
-          registerStatus = errorDetails;
         });
-      return logInStatus;
     },
     logIn(credentials) {
       signInWithEmailAndPassword(auth, credentials.email, credentials.password)
         .then((userCredential) => {
           const user = userCredential.user;
-          this.successLoginDetails.status = 1;
-          this.successLoginDetails.user = user;
         })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          this.errorLoginDetails.status = 0;
-          this.errorLoginDetails.errorCode = errorCode;
-          this.errorLoginDetails.errorMessage = errorMessage;
         });
-      console.log(this.successDetails);
-      console.log(this.errorDetails);
     },
     signOut() {
       let logInStatus = {};
       signOut(auth)
-        .then(() => {
-          logInStatus = {
-            status: 1,
-          };
-        })
-        .catch((error) => {
-          logInStatus = {
-            status: 0,
-            error,
-          };
-        });
-
-      return logInStatus;
+        .then(() => {})
+        .catch((error) => {});
     },
   },
 });

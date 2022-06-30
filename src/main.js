@@ -1,5 +1,6 @@
-import { createApp } from "vue";
+import { createApp, markRaw } from "vue";
 import { createPinia } from "pinia";
+
 import "./index.css";
 import App from "./App.vue";
 
@@ -10,6 +11,10 @@ import "ant-design-vue/dist/antd.css";
 const pinia = createPinia();
 const app = createApp(App);
 // createApp(App).use(router).use(Antd).mount("#app"); // alterNative of the below formate
+
+pinia.use(({ store }) => {
+  store.router = markRaw(router);
+});
 
 app.use(router);
 app.use(Antd);

@@ -9,15 +9,15 @@
 <script setup>
 // imports
 import { onMounted } from "vue";
-import { useStoreNotes } from "@/stores/storeNotes";
+import { useStoreAuth } from "@/stores/storeAuth";
 import BaseLayout from "@/components/Layout/_base-layout.vue";
 
 //store
-const storeNotes = useStoreNotes();
+const storeAuth = useStoreAuth();
 
 //hook
 onMounted(() => {
-  storeNotes.getNotes();
+  storeAuth.init();
 });
 </script>
 

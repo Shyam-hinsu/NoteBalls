@@ -5,13 +5,14 @@
   </template>
 
   <div v-else>loding ......</div>
-  <a-empty v-if="!storeNotes.notes.length" />
+  <a-empty v-if="!storeNotes.notes.length && !storeNotes.isNotesLoaded" />
 </template>
 
 <script setup>
 // imports
 import { ref } from "vue";
 import { useStoreNotes } from "@/stores/storeNotes";
+
 import Note from "@/components/note.vue";
 import Form from "@/components/form/form.vue";
 

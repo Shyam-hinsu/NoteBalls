@@ -35,7 +35,7 @@
     </a-row>
     <a-row class="justify-center auth-message">
       <a-col class="error-bg px-1 text-xs">
-        <h6>{{ authMessage }}</h6>
+        <h6>msg</h6>
       </a-col>
     </a-row>
     <a-divider type="horizontal" class="bg-blue-500 my-1" />
@@ -84,8 +84,14 @@
 
 <script setup>
 import { ref, computed } from "vue";
+import { useRoute, useRouter } from "vue-router";
+
 import { MailOutlined, LockOutlined } from "@ant-design/icons-vue";
 import { useStoreAuth } from "@/stores/storeAuth";
+
+//router
+const router = useRouter();
+const rout = useRoute();
 
 // constents
 const register = ref(false);
@@ -96,10 +102,10 @@ const credentials = ref({
 //store
 const storeAuth = useStoreAuth();
 
-//computed
-const authMessage = computed(() => {
-  return storeAuth.errorLoginDetails.errorMessage;
-});
+// //computed
+// const authMessage = computed(() => {
+//   return storeAuth.errorLoginDetails.errorMessage;
+// });
 
 // methods
 function onFinish() {
@@ -108,10 +114,11 @@ function onFinish() {
   } else {
     if (register.value) {
       storeAuth.register(credentials.value);
-      console.log(storeAuth.register(credentials.value));
+      if (storeAuth.user.id) {
+        register.value = false;
+      }
     } else {
       storeAuth.logIn(credentials.value);
-      console.log(storeAuth.logIn(credentials.value));
     }
   }
 }
