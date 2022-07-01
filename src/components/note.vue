@@ -14,7 +14,7 @@
     <template #actions>
       <a-button type="primary"
         ><RouterLink :to="`/viewEditNote/${note.id}`"
-          >edit</RouterLink
+          >Edit</RouterLink
         ></a-button
       >
 
